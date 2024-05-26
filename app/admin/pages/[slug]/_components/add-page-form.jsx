@@ -31,11 +31,11 @@ const [state, FormAction] = useFormState(addPageActionWithName, null)
         <div className='space-y-4'>
         <div>
         <Label className='capitalize' htmlFor='heading' >Heading</Label>
-        <Input id='heading' name='heading' />
+        <Input defaultValue={page?.heading || ''} id='heading' name='heading' />
         </div>
         <div>
         <Label className='capitalize' htmlFor='sub_heading' >Sub Heading</Label>
-        <Input id='sub_heading' name='sub_heading' />
+        <Input defaultValue={page?.sub_heading || ''} id='sub_heading' name='sub_heading' />
         </div>
 
         <Button className='w-full'>Save</Button>

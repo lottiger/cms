@@ -7,6 +7,8 @@ function LandingPage() {
 
   const data =  usePageData('home')
 
+  
+
 
   return (
     <div>
