@@ -19,7 +19,7 @@ function LandingPage() {
           <Link href="/events">Go check out the events</Link>
         </Button>
         <Button asChild>
-          <Link href="/admin/dashboard">Enter as admin</Link>
+          <Link href="/admin/collections">Enter as admin</Link>
         </Button>
       </div>
     </div>

@@ -11,15 +11,10 @@ export const SidebarRoutes = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <Link href="/admin/dashboard" className={cn("flex items-center justify-between p-4 hover:bg-slate-50/10 border-r-4 border-transparent",
-        pathname.startsWith("/admin/dashboard") && "bg-slate-50/5 border-slate-500"
-      )}>
-        <p>Dashboard</p>
-        <LayoutDashboard className="size-5" />
-      </Link>
       <Link href="/admin/pages" className={cn("flex items-center justify-between p-4 hover:bg-slate-50/10 border-r-4 border-transparent",
         pathname.startsWith("/admin/pages") && "bg-slate-50/5 border-slate-500"
       )}>
+       
         <p>Pages</p>
         <PanelsTopLeft className="size-5" />
       </Link>

@@ -74,7 +74,9 @@ export const ManageAdminsDialog = ({ users }) => {
     return (
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button>Manage Admins</Button>
+          <div className="flex justify-center items-center mt-40">
+          <Button className=''>Manage Admins</Button>
+          </div>
         </DialogTrigger>
         <DialogContent className="max-w-screen-md h-[600px] flex flex-col justify-between">
           <DialogHeader>
