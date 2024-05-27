@@ -10,5 +10,18 @@ export default defineSchema({
   pages: defineTable({
     name: v.string(),
     content: v.string(),
-  }).index('by_name', ['name'])
+  }).index('by_name', ['name']),
+
+  events: defineTable({
+    title: v.string(),
+    date: v.string(),
+    description: v.string(),
+    imageId: v.id("_storage"),
+    location: v.string(),
+    price: v.number(),
+    seats: v.number(),
+    // attendees: v.array(v.id("_user"))
+   
+  
+}),
 });
