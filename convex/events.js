@@ -124,4 +124,8 @@ export const getById = query({
       await ctx.storage.delete(args.imageId)
     }
   })
-  
+
+
+
+
+ 

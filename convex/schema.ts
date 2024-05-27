@@ -20,8 +20,12 @@ export default defineSchema({
     location: v.string(),
     price: v.number(),
     seats: v.number(),
-    // attendees: v.array(v.id("_user"))
-   
-  
 }),
-});
+
+  bookings: defineTable({
+    id: v.id('bookings'),
+    userId: v.id('_user'),
+    eventId: v.id('events'),
+}),
+
+})
