@@ -23,8 +23,7 @@ export default defineSchema({
 }),
 
   bookings: defineTable({
-    id: v.id('bookings'),
-    userId: v.id('_user'),
+    userId: v.string(),
     eventId: v.id('events'),
 }),
 

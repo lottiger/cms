@@ -9,7 +9,7 @@ import {
   const allowedOrigins = ['*']
    
   const corsOptions = {
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   }
   
@@ -37,7 +37,6 @@ import {
     const origin = req.headers.get('origin') ?? ''
     const isAllowedOrigin = allowedOrigins.includes(origin) || allowedOrigins.includes('*')
    
-    // Handle preflighted requests
     const isPreflight = req.method === 'OPTIONS'
    
     if (isPreflight) {
@@ -48,7 +47,7 @@ import {
       return NextResponse.json({}, { headers: preflightHeaders })
     }
    
-    // Handle simple requests
+    
     const response = NextResponse.next()
    
     if (isAllowedOrigin) {
