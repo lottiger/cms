@@ -25,6 +25,8 @@ export const ManageAdminsDialog = ({ users }) => {
 
     const { userId } = useAuth()
   
+    console.log(userId)
+
     const [isOpen, setIsOpen] = useState(false)
     const [selected, setSelected] = useState([])
     const [error, setError] = useState(null)
