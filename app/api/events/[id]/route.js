@@ -3,12 +3,26 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { fetchMutation, fetchQuery } from "convex/nextjs";
 import { NextResponse } from "next/server";
 
+
+
+
 export async function GET(request, { params }) {
 
-  console.log(params)
-  const event = await fetchQuery(api.events.getById, { eventId: params.id })
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+  
+  if(id) {
+    const event = await fetchQuery(api.events.getById, { eventId: params.id, userId: id })
 
-  return NextResponse.json(event, { status: 200 })
+    return NextResponse.json(event, { status: 200 })
+  }
+  else {
+
+    console.log(params)
+    const event = await fetchQuery(api.events.getById, { eventId: params.id })
+
+    return NextResponse.json(event, { status: 200 })
+  }
 }
 
 
@@ -23,7 +37,8 @@ export async function POST(request, { params }) {
     // Hämta användarlistan från Clerk
     const {data} = await clerkClient.users.getUserList();
 
-    
+    console.log(data.map(user => user.id))
+
     // Kontrollera om användaren finns
     if (!data.some(user => user.id == userId)){
       return NextResponse.json({ error: 'User not found' }, { status: 404 });

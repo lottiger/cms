@@ -49,23 +49,75 @@ export const getAll = query({
             };
         }))
 
-        return eventsImageUrls
+        const eventsWithBookings = await Promise.all(eventsImageUrls.map(async (event) => {
+            const bookings = await ctx.db.query("bookings").filter(q => q.eq(q.field("eventId"), event._id)).collect()
+            return {
+                ...event,
+                bookings: bookings.length
+            }
+        }))
+
+        return eventsWithBookings
+    }
+})
+
+export const getBooked = query({
+    args: {
+        userId: v.string()
+    },
+    handler: async (ctx, {userId}) => {
+        const bookings = await ctx.db.query("bookings").filter(q => q.eq(q.field("userId"), userId)).collect()
+
+        const events = await Promise.all(bookings.map(async (booking) => {
+            const event = await ctx.db.get(booking.eventId)
+            const imageUrl = event.imageId ? await ctx.storage.getUrl(event.imageId) : null
+
+            return {
+                ...event,
+                image: imageUrl
+            }
+        }))
+
+        return events
     }
 })
 
 
+// Hämtar enskillt event + om användaren är bokad
 export const getById = query({
     args: {
-      eventId: v.id("events")
+      eventId: v.id("events"),
+      userId: v.optional(v.string())
     },
     handler: async (ctx, args) => {
   
       const event = await ctx.db.get(args.eventId)
+
+      let eventsWithBookings
+
+
+      if(args.userId) {
+        const booking = await ctx.db.query("bookings").filter(q => q.and(q.eq(q.field("eventId"), args.eventId), q.eq(q.field("userId"), args.userId))).first()
   
-      return {
-        ...event,
-        image: event.imageId ? await ctx.storage.getUrl(event.imageId) : undefined
+        eventsWithBookings = {
+          ...event,
+          image: event.imageId ? await ctx.storage.getUrl(event.imageId) : undefined,
+          booked: !!booking
+        }
       }
+      else {
+        eventsWithBookings = {
+          ...event,
+          image: event.imageId ? await ctx.storage.getUrl(event.imageId) : undefined
+        }
+      }
+
+      const bookings = await ctx.db.query("bookings").filter(q => q.eq(q.field("eventId"), args.eventId)).collect()
+      return {
+        ...eventsWithBookings,
+        bookings: bookings.length
+      }
+  
     }
   })
 
