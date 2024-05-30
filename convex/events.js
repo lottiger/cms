@@ -71,7 +71,7 @@ export const getBooked = query({
 
           const events = await Promise.all(bookings.map(async (booking) => {
               const event = await ctx.db.get(booking.eventId)
-              console.log(event)
+
               if (!event) {
                   throw new Error(`Event with id ${booking.eventId} not found`);
               }
