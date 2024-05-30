@@ -62,24 +62,34 @@ export const getAll = query({
 })
 
 export const getBooked = query({
-    args: {
-        userId: v.string()
-    },
-    handler: async (ctx, {userId}) => {
-        const bookings = await ctx.db.query("bookings").filter(q => q.eq(q.field("userId"), userId)).collect()
+  args: {
+      userId: v.string()
+  },
+  handler: async (ctx, {userId}) => {
+      try {
+          const bookings = await ctx.db.query("bookings").filter(q => q.eq(q.field("userId"), userId)).collect()
 
-        const events = await Promise.all(bookings.map(async (booking) => {
-            const event = await ctx.db.get(booking.eventId)
-            const imageUrl = event.imageId ? await ctx.storage.getUrl(event.imageId) : null
+          const events = await Promise.all(bookings.map(async (booking) => {
+              const event = await ctx.db.get(booking.eventId)
+              console.log(event)
+              if (!event) {
+                  throw new Error(`Event with id ${booking.eventId} not found`);
+              }
 
-            return {
-                ...event,
-                image: imageUrl
-            }
-        }))
+              const imageUrl = event.imageId ? await ctx.storage.getUrl(event.imageId) : null
 
-        return events
-    }
+              return {
+                  ...event,
+                  image: imageUrl
+              }
+          }))
+
+          return events
+      } catch (error) {
+          console.error(`Failed to fetch events for user ${userId}: ${error}`);
+          throw new ConvexError(error.message);
+      }
+  }
 })
 
 
@@ -172,6 +182,11 @@ export const getById = query({
         imageId: v.id ("_storage"),
     },
     handler: async (ctx, args) => {
+    const bookings = await ctx.db.query("bookings").filter(q => q.eq(q.field("eventId"), args.eventId)).collect()
+    Promise.all(bookings.map(async booking => {
+      await ctx.db.delete(booking._id)
+    }
+    ))
       await ctx.db.delete(args.eventId)
       await ctx.storage.delete(args.imageId)
     }
@@ -180,4 +195,19 @@ export const getById = query({
 
 
 
- 
+ export const removeBooking = mutation({
+    args: {
+        eventId: v.id("events"),
+    },
+    handler: async (ctx, args) => {
+        // const identity = await ctx.auth.getUserIdentity()
+        // if (!identity) throw new ConvexError("Unauthenticated")
+
+        const bookings = await ctx.db.query("bookings").filter(q => q.eq(q.field("eventId"), args.eventId)).collect()
+
+        // await ctx.db.delete(booking._id)
+        await Promise.all(bookings.map(async booking => {
+            await ctx.db.delete(booking._id)
+        }))
+    }
+})
