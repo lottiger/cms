@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 
 
 export async function GET(request) {
-
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
 
@@ -18,7 +17,18 @@ export async function GET(request) {
       return NextResponse.json(events, { status: 200 });
     }
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: 'An error occurred while fetching the events.' }, { status: 500 });
+    console.error(`Error fetching events for user ${id}:`, error);
+    return NextResponse.json({ message: 'An error occurred while fetching the events.', details: error.message }, { status: 500 });
   }
 }
+
+// export async function POST(request) {
+//   const { eventId} = await request.json();
+//   try {
+//     const response = await fetchMutation(api.events.removeBooking, { eventId });
+//     return NextResponse.json(response, { status: 200 });
+//   } catch (error) {
+//     console.error(`Error creating event:`, error);
+//     return NextResponse.json({ message: 'An error occurred while removing the bookings.', details: error.message }, { status: 500 });
+//   }
+// }
